@@ -3,6 +3,7 @@ import './App.css';
 import TodoListHeader from "./TodoListHeader";
 import TodoListTasks from "./TodoListTasks";
 import TodoListFooter from "./TodoListFooter";
+import PropTypes from 'prop-types';
 
 
 class App extends React.Component {
@@ -61,3 +62,6 @@ class App extends React.Component {
 
 export default App;
 
+// App.propTypes = {
+//     newTaskTitleRef: PropTypes.object
+// };
