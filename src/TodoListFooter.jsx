@@ -8,9 +8,27 @@ class TodoListFooter extends React.Component {
 
         return (
             <div className="todoList-footer">
-                <button className={classForAll}>All</button>
-                <button className={classForCompleted}>Completed</button>
-                <button className={classForActive}>Active</button>
+                <button
+                    className={classForAll}
+                    onClick={() => {
+                        this.props.changeFilter("All")// создается стрелочная анонимная функция которая при нажитии на кнопку вызывает функцию  changeFilter
+                    }}
+                >All
+                </button>
+                <button
+                    className={classForCompleted}
+                    onClick={() => {
+                        this.props.changeFilter("Completed")   // создается стрелочная анонимная функция которая при нажитии на кнопку вызывает функцию  changeFilter
+                    }}
+                >Completed
+                </button>
+                <button
+                    className={classForActive}
+                    onClick={() => {
+                        this.props.changeFilter("Active")  // создается стрелочная анонимная функция которая при нажитии на кнопку вызывает функцию  changeFilter
+                    }}
+                >Active
+                </button>
             </div>
         );
     }
