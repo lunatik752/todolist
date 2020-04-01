@@ -11,7 +11,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         // this.newTaskTitleRef = React.createRef();
-        //
+
     }
 
     state = {
@@ -22,6 +22,7 @@ class App extends React.Component {
             {title: 'React', isDone: false, priority: 'higt'},
         ],
         filterValue: 'All',
+
     };
 
     addTask = (newTitle) => {
