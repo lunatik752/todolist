@@ -3,7 +3,7 @@ import React from "react";
 class TodoListTask extends React.Component {
 
 
-    onIsDoneChanged = (e) => {this.changeStatus(this.props.task, e.currentTarget.checked)};
+    onIsDoneChanged = (e) => {this.props.changeStatus(this.props.task, e.currentTarget.checked)};
 
     render = () => {
 
