@@ -29,7 +29,6 @@ class TodoListFooter extends React.Component {
 
         return (
             <div className="todoList-footer">
-
                 {!this.state.isHidden && <div>
                     <button className={classForAll} onClick={() => {
                         this.setState(this.onAllFilterClick)
