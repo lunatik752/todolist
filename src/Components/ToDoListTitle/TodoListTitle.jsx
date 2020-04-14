@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from 'prop-types';
 
-class TodoListHeader extends React.Component {
+class TodoListTitle extends React.Component {
 
     state = {
         error: false,
@@ -38,25 +38,15 @@ class TodoListHeader extends React.Component {
 
 
         return (
-            <div className="todoList-header">
-                <h3 className="todoList-header__title">What to Learn</h3>
-                <div className="todoList-newTaskForm">
-                    <input
-                        type="text" placeholder="New task name"
-                        className={this.state.error ? "error" : ""}
-                        onChange={this.onFilterChange}
-                        onKeyPress={this.onKeyPress}
-                        value={this.state.title}
-                    />
-                    <button onClick={this.onAddTaskClick}>Add</button>
-                </div>
+            <div className="todoListTitle">
+                <h3 className="todoList-header__title">{this.props.title}</h3>
             </div>
         );
     }
 }
 
-export default TodoListHeader;
+export default TodoListTitle;
 
-TodoListHeader.propTypes = {
+TodoListTitle.propTypes = {
     name: PropTypes.object
 };

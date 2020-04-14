@@ -1,13 +1,21 @@
-.todoList {
-  width: 500px;
-  margin: 0 auto;
+.App {
+  display: flex;
+  flex-direction: row;
 }
+
+.todoList {
+  width: 300px;
+}
+
+
+/*.todoList {*/
+/*  width: 500px;*/
+/*  margin: 0 auto;*/
+/*}*/
 
 .todoList > div {
   padding: 10px;
 }
-
-
 
 .filter-active {
   background-color: blue;
