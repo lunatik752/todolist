@@ -46,6 +46,10 @@ class TodoListFooter extends React.Component {
                             this.setState(this.onActiveFilterClick)
                         }}>Active
                     </button>
+                    <button
+                        className='clearTasks'
+                        onClick={this.props.clearState}>Clear
+                    </button>
                 </div>}
                 {!this.state.isHidden && <span onClick={() => {
                     this.setState(this.onHideFiltersClick)

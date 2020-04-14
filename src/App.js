@@ -41,8 +41,13 @@ class App extends React.Component {
                 }
             })
         });
-
     };
+
+    clearState = () => {
+        localStorage.clear();
+        this.restoreState();
+    };
+
 
     addTask = (newTitle) => {
         let newTask = {
@@ -111,6 +116,7 @@ class App extends React.Component {
                     <TodoListFooter
                         filterValue={this.state.filterValue}
                         changeFilter={this.changeFilter}
+                        clearState={this.clearState}
                     />
                 </div>
             </div>

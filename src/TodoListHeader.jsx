@@ -18,7 +18,6 @@ class TodoListHeader extends React.Component {
             this.setState({error: false});
             this.props.addTask(newTitle)
         }
-
     };
 
     onFilterChange = (e) => {
@@ -26,8 +25,6 @@ class TodoListHeader extends React.Component {
             error: false,
             title: e.currentTarget.value
         });
-
-
     };
 
     onKeyPress = (e) => {
