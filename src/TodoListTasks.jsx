@@ -1,7 +1,5 @@
 import React from "react";
 import TodoListTask from "./Components/TodoListTasks/TodoListTask/TodoListTask";
-import ToDoList from "./ToDoList";
-
 class TodoListTasks extends React.Component {
 
 
