@@ -1,10 +1,34 @@
+.app_wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+}
+
 .App {
   display: flex;
-  flex-direction: row;
 }
 
 .todoList {
   width: 300px;
+  border: black 1px solid;
+  margin: 20px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.todoList_header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detete_todoList {
+  background: red;
+  width: 25px;
+  height: 25px;
+
 }
 
 

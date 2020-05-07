@@ -5,6 +5,15 @@ import TodoListFooter from "./TodoListFooter";
 import TodoListTitle from "./Components/ToDoListTitle/TodoListTitle";
 import AddNewItemForm from "./Components/AddNewItemForm/AddNewItemForm";
 import {connect} from "react-redux";
+import {
+    ADD_TASK,
+    addTaskAC,
+    CHANGE_TASK,
+    changeTaskAC,
+    DELETE_TASK,
+    DELETE_TODOLIST, deleteTaskAC,
+    deleteTodoListAC
+} from "./reducer";
 
 
 class ToDoList extends React.Component {
@@ -107,8 +116,11 @@ class ToDoList extends React.Component {
         return (
             <div className="App">
                 <div className="todoList">
+                    <div className='todoList_header'>
                     <TodoListTitle title={this.props.title}/>
-                    <button onClick={this.deleteTodoList}>x</button>
+
+                        <button className='detete_todoList' onClick={this.deleteTodoList}>x</button>
+                    </div>
                     <AddNewItemForm addItem={this.addTask}/>
                     <TodoListTasks
                         changeTitle={this.changeTitle}
@@ -141,37 +153,20 @@ class ToDoList extends React.Component {
 const mapDispatchToProps = (dispatch) => {
     return {
         addTask(todolistId, newTask,) {
-            const action = {
-                type: 'ADD-TASK',
-                newTask,
-                todolistId
-            }
+            const action = addTaskAC(todolistId, newTask)
             dispatch(action)
         },
         changeTask: (todolistId, taskId, obj) => {
-            const action = {
-                type: 'CHANGE-TASK',
-                todolistId: todolistId,
-                taskId: taskId,
-                obj: obj
-            }
+            const action = changeTaskAC(todolistId, taskId, obj)
             dispatch(action)
         },
         deleteTodoList: (todolistId) => {
-            const action = {
-                type: 'DELETE-TODOLIST',
-                todolistId: todolistId,
-            }
+            const action = deleteTodoListAC(todolistId)
             dispatch(action)
         },
         deleteTask: (todolistId, taskId) => {
-            const action = {
-                type: 'DELETE-TASK',
-                todolistId: todolistId,
-                taskId: taskId
-
-        }
-                dispatch(action)
+            const action = deleteTaskAC(todolistId, taskId)
+            dispatch(action)
         }
     }
 }

@@ -4,6 +4,7 @@ import './App.css';
 import ToDoList from "./ToDoList";
 import AddNewItemForm from "./Components/AddNewItemForm/AddNewItemForm";
 import {connect} from "react-redux";
+import {addTodolistAC} from "./reducer";
 
 
 class App extends React.Component {
@@ -50,7 +51,6 @@ class App extends React.Component {
 
 
     render = () => {
-debugger
         const toDoLists = this.props.todoLists.map(t => {
                 return <ToDoList key={t.id}
                                  id={t.id}
@@ -61,14 +61,14 @@ debugger
         );
 
         return (
-            <>
+            <div className='app_wrapper'>
                 <div>
                     <AddNewItemForm addItem={this.addTodoList}/>
                 </div>
                 <div className="App">
                     {toDoLists}
                 </div>
-            </>
+            </div>
         );
     }
 }
@@ -83,10 +83,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         addTodolist: (newTodoList) => {
-            const action = {
-                type: "ADD-TODOLIST",
-                newTodoList: newTodoList
-            };
+            const action = addTodolistAC(newTodoList);
             dispatch(action)
         }
     }
