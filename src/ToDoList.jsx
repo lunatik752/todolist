@@ -5,15 +5,8 @@ import TodoListFooter from "./TodoListFooter";
 import TodoListTitle from "./Components/ToDoListTitle/TodoListTitle";
 import AddNewItemForm from "./Components/AddNewItemForm/AddNewItemForm";
 import {connect} from "react-redux";
-import {
-    ADD_TASK,
-    addTaskAC,
-    CHANGE_TASK,
-    changeTaskAC,
-    DELETE_TASK,
-    DELETE_TODOLIST, deleteTaskAC,
-    deleteTodoListAC
-} from "./reducer";
+import {addTaskAC, changeTaskAC, deleteTaskAC, deleteTodoListAC, setTaskAC} from "./reducer";
+import axios from 'axios'
 
 
 class ToDoList extends React.Component {
@@ -22,7 +15,6 @@ class ToDoList extends React.Component {
         this.restoreState()
     };
 
-    nextTaskId = 0;
 
     state = {
         tasks: [],
@@ -34,7 +26,7 @@ class ToDoList extends React.Component {
         localStorage.setItem('our-state-' + this.props.id, stateAsString)
     };
 
-    restoreState = () => {
+    _restoreState = () => {
         let state = {
             tasks: [],
             filterValue: 'All'
@@ -52,21 +44,52 @@ class ToDoList extends React.Component {
         });
     };
 
+    restoreState = () => {
+        axios.get(`https://social-network.samuraijs.com/api/1.1/todo-lists/${this.props.id}/tasks`,
+            {
+                withCredentials: true,
+                headers: {"API-KEY": "90bf912e-ca5a-4b96-9037-858f400fe7a5"}
+            }
+        )
+            .then(response => {
+                if (!response.data.error) {
+                    let allTasks = response.data.items;
+                    this.props.setTasks(allTasks, this.props.id)
+                }
+            })
+    }
 
-    addTask = (newTitle) => {
-        let newTask = {
-            id: this.nextTaskId,
-            title: newTitle,
-            isDone: true,
-            priority: 'low'
-        };
-        this.nextTaskId++;
-        // let newTasks = [...this.state.tasks, newTask];
-        this.props.addTask(this.props.id, newTask)
-        // this.setState({
-        //     tasks: newTasks
-        // },() =>{this.saveState();});
+
+    addTask = (newText) => {
+        debugger
+        axios.post(`https://social-network.samuraijs.com/api/1.1/todo-lists/${this.props.id}/tasks`,
+            {title: newText},
+            {
+                withCredentials: true,
+                headers: {"API-KEY": "90bf912e-ca5a-4b96-9037-858f400fe7a5"}
+            })
+            .then(responsive => {
+                debugger
+                let newTask = responsive.data.data.item;
+                this.props.addTask(newTask)
+            })
     };
+
+
+    // addTask = (newTitle) => {
+    //     let newTask = {
+    //         id: this.nextTaskId,
+    //         title: newTitle,
+    //         isDone: true,
+    //         priority: 'low'
+    //     };
+    //     this.nextTaskId++;
+    //     // let newTasks = [...this.state.tasks, newTask];
+    //     this.props.addTask(this.props.id, newTask)
+    //     // this.setState({
+    //     //     tasks: newTasks
+    //     // },() =>{this.saveState();});
+    // };
 
 
     changeFilter = (newFilterValue) => {
@@ -103,7 +126,18 @@ class ToDoList extends React.Component {
     };
 
     deleteTodoList = () => {
-        this.props.deleteTodoList(this.props.id)
+        axios.delete(`https://social-network.samuraijs.com/api/1.1/todo-lists/${this.props.id}`,
+            {
+                withCredentials: true,
+                headers: {"API-KEY": "90bf912e-ca5a-4b96-9037-858f400fe7a5"}
+            }
+        )
+            .then(response => {
+                    if (response.data.resultCode === 0) {
+                        this.props.deleteTodoList(this.props.id)
+                    }
+                }
+            )
     }
 
     deleteTask = (taskId) => {
@@ -112,12 +146,12 @@ class ToDoList extends React.Component {
 
 
     render = () => {
-
+        let {tasks = []} = this.props
         return (
             <div className="App">
                 <div className="todoList">
                     <div className='todoList_header'>
-                    <TodoListTitle title={this.props.title}/>
+                        <TodoListTitle title={this.props.title}/>
 
                         <button className='detete_todoList' onClick={this.deleteTodoList}>x</button>
                     </div>
@@ -126,7 +160,7 @@ class ToDoList extends React.Component {
                         changeTitle={this.changeTitle}
                         changeStatus={this.changeStatus}
                         deleteTask={this.deleteTask}
-                        tasks={this.props.tasks.filter(t => {
+                        tasks={tasks.filter(t => {
                             if (this.state.filterValue === "All") {
                                 return true;
                             }
@@ -152,8 +186,12 @@ class ToDoList extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        addTask(todolistId, newTask,) {
-            const action = addTaskAC(todolistId, newTask)
+        setTasks(tasks, todolistId) {
+            const action = setTaskAC(tasks, todolistId)
+            dispatch(action)
+        },
+        addTask(newTask) {
+            const action = addTaskAC(newTask)
             dispatch(action)
         },
         changeTask: (todolistId, taskId, obj) => {
