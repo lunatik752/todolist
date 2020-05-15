@@ -101,28 +101,27 @@ class ToDoList extends React.Component {
         );
     };
 
-    changeTask = (taskId, obj) => {
-        let newTasks = this.state.tasks.map(t => {
-            if (t.id !== taskId) {
-                return t;
-            } else {
-                return {...t, ...obj}
+    changeTask = (task, obj) => {
+        axios.put(`https://social-network.samuraijs.com/api/1.1/todo-lists/${this.props.id}/tasks/${task.id}`,
+            {...task, ...obj},
+            {
+                withCredentials: true,
+                headers: {"API-KEY": "90bf912e-ca5a-4b96-9037-858f400fe7a5"}
             }
-        });
-
-        // this.setState({
-        //     tasks: newTasks
-        // }, () => {
-        //     this.saveState();
-        // });
+        )
+            .then(response => {
+                if (response.data.resultCode === 0) {
+                    this.props.changeTask(response.data.data.item)
+                }
+            })
     };
 
-    changeStatus = (taskId, isDone) => {
-        this.props.changeTask(this.props.id, taskId, {isDone: isDone})
+    changeStatus = (taskId, status) => {
+        this.changeTask(taskId, {status: status})
     };
 
-    changeTitle = (taskId, title) => {
-        this.props.changeTask(this.props.id, taskId, {title: title})
+    changeTitle = (task, title) => {
+        this.changeTask(task, {title: title})
     };
 
     deleteTodoList = () => {
@@ -141,7 +140,17 @@ class ToDoList extends React.Component {
     }
 
     deleteTask = (taskId) => {
-        this.props.deleteTask(this.props.id, taskId)
+        axios.delete(`https://social-network.samuraijs.com/api/1.1/todo-lists/${this.props.id}/tasks/${taskId}`,
+            {
+                withCredentials: true,
+                headers: {"API-KEY": "90bf912e-ca5a-4b96-9037-858f400fe7a5"}
+            }
+        )
+            .then(response => {
+                if (response.data.resultCode === 0) {
+                    this.props.deleteTask(this.props.id, taskId)
+                }
+            })
     }
 
 
@@ -165,10 +174,10 @@ class ToDoList extends React.Component {
                                 return true;
                             }
                             if (this.state.filterValue === "Completed") {
-                                return t.isDone === true;
+                                return t.status === 2;
                             }
                             if (this.state.filterValue === "Active") {
-                                return t.isDone === false;
+                                return t.status === 0;
                             }
                         })}/>
                     <TodoListFooter
@@ -194,8 +203,8 @@ const mapDispatchToProps = (dispatch) => {
             const action = addTaskAC(newTask)
             dispatch(action)
         },
-        changeTask: (todolistId, taskId, obj) => {
-            const action = changeTaskAC(todolistId, taskId, obj)
+        changeTask: (task) => {
+            const action = changeTaskAC(task)
             dispatch(action)
         },
         deleteTodoList: (todolistId) => {
