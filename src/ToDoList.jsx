@@ -76,22 +76,6 @@ class ToDoList extends React.Component {
     };
 
 
-    // addTask = (newTitle) => {
-    //     let newTask = {
-    //         id: this.nextTaskId,
-    //         title: newTitle,
-    //         isDone: true,
-    //         priority: 'low'
-    //     };
-    //     this.nextTaskId++;
-    //     // let newTasks = [...this.state.tasks, newTask];
-    //     this.props.addTask(this.props.id, newTask)
-    //     // this.setState({
-    //     //     tasks: newTasks
-    //     // },() =>{this.saveState();});
-    // };
-
-
     changeFilter = (newFilterValue) => {
         this.setState({
                 filterValue: newFilterValue
