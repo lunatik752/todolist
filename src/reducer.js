@@ -5,8 +5,7 @@ export const DELETE_TODOLIST = "todolist/reducer/DELETE-TODOLIST"
 export const DELETE_TASK = "todolist/reducer/DELETE-TASK"
 export const SET_TODOLISTS = "todolist/reducer/SET-TODOLISTS"
 export const SET_TASKS = "todolist/reducer/SET-TASKS"
-
-//наименование action дается согласно redux-ducks
+export const CHANGE_TODOLIST_TITLE = "todolist/reducer/CHANGE_TODOLIST_TITLE"
 
 
 const initialState = {
@@ -45,7 +44,6 @@ export const reducer = (state = initialState, action) => {
             })
             return {...state, todolists: newTodolist};
         case CHANGE_TASK:
-            debugger
             return {
                 ...state,
                 todolists: state.todolists.map(tl => {
@@ -79,6 +77,17 @@ export const reducer = (state = initialState, action) => {
                         return todo
                     } else {
                         return {...todo, tasks: todo.tasks.filter(task => task.id !== action.taskId)}
+                    }
+                })
+            }
+        case CHANGE_TODOLIST_TITLE:
+            return {
+                ...state,
+                todolists: state.todolists.map(tl => {
+                    if (tl.id === action.todolistId) {
+                        return {...tl, title: action.title}
+                    } else {
+                        return tl
                     }
                 })
             }
@@ -119,7 +128,6 @@ export const changeTaskAC = (task) => {
 }
 
 export const deleteTodoListAC = (todolistId) => {
-   debugger
     return {
         type: DELETE_TODOLIST,
         todolistId: todolistId,
@@ -131,6 +139,13 @@ export const deleteTaskAC = (todolistId, taskId) => {
         type: DELETE_TASK,
         todolistId: todolistId,
         taskId: taskId
+    };
+}
+export const changeTodoListTitleAC = (todolistId, title) => {
+    return {
+        type: CHANGE_TODOLIST_TITLE,
+        todolistId,
+        title
     };
 }
 

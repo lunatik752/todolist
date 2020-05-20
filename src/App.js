@@ -4,7 +4,7 @@ import ToDoList from "./ToDoList";
 import AddNewItemForm from "./Components/AddNewItemForm/AddNewItemForm";
 import {connect} from "react-redux";
 import {addTodolistAC, setTodoListsAC} from "./reducer";
-import axios from 'axios'
+import api from "./api";
 
 
 class App extends React.Component {
@@ -14,19 +14,14 @@ class App extends React.Component {
     };
 
     restoreState = () => {
-        axios.get("https://social-network.samuraijs.com/api/1.1/todo-lists", {withCredentials: true})
+            api.getTodoList()
             .then(res => {
                 this.props.setTodoLists(res.data);
             });
     }
 
     addTodoList = (title) => {
-        axios.post( "https://social-network.samuraijs.com/api/1.1/todo-lists",
-            {title: title},
-            {
-                withCredentials: true,
-                headers: {"API-KEY": "90bf912e-ca5a-4b96-9037-858f400fe7a5"}
-            })
+        api.createTodoList(title)
                 .then(responsive => {
                     let todolist = responsive.data.data.item;
                     this.props.addTodolist(todolist)
@@ -35,24 +30,13 @@ class App extends React.Component {
 
 
 
-    // addTodoList = (newTodoListName) => {
-    //     let newToDoList = {
-    //         tasks: [],
-    //         id: this.nextToDoListId,
-    //         title: newTodoListName,
-    //     };
-    //     this.props.addTodolist(newToDoList)
-    //     this.nextToDoListId++;
-    // };
-
 
     render = () => {
         const toDoLists = this.props.todoLists.map(t => {
                 return <ToDoList key={t.id}
                                  id={t.id}
                                  title={t.title}
-                                 tasks={t.tasks}
-                                 />
+                                 tasks={t.tasks}/>
             }
         );
 
@@ -83,7 +67,6 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(action)
         },
         setTodoLists: (todolists) => {
-            debugger
             dispatch(setTodoListsAC(todolists))
         }
     }
