@@ -3,8 +3,9 @@ import './App.css';
 import ToDoList from "./ToDoList";
 import AddNewItemForm from "./Components/AddNewItemForm/AddNewItemForm";
 import {connect} from "react-redux";
-import {addTodolistAC, setTodoListsAC} from "./reducer";
+import {addTodolist, createNewTodoLists, getTodoLists} from "./reducer";
 import api from "./api";
+import Loading from "./common/Loading/Loading";
 
 
 class App extends React.Component {
@@ -14,21 +15,12 @@ class App extends React.Component {
     };
 
     restoreState = () => {
-            api.getTodoList()
-            .then(res => {
-                this.props.setTodoLists(res.data);
-            });
+        this.props.getTodoLists();
     }
 
     addTodoList = (title) => {
-        api.createTodoList(title)
-                .then(responsive => {
-                    let todolist = responsive.data.data.item;
-                    this.props.addTodolist(todolist)
-                })
+        this.props.createNewTodoLists(title);
     };
-
-
 
 
     render = () => {
@@ -42,12 +34,16 @@ class App extends React.Component {
 
         return (
             <div className='app_wrapper'>
-                <div>
-                    <AddNewItemForm addItem={this.addTodoList}/>
-                </div>
-                <div className="App">
-                    {toDoLists}
-                </div>
+                {this.props.isWaitingTodo
+                    ? <Loading/>
+                    : <>
+                        <div>
+                            <AddNewItemForm addItem={this.addTodoList}/>
+                        </div>
+                        <div className="App">
+                            {toDoLists}
+                        </div>
+                    </>}
             </div>
         );
     }
@@ -56,23 +52,12 @@ class App extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        todoLists: state.todolists
-    }
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        addTodolist: (newTodoList) => {
-            const action = addTodolistAC(newTodoList);
-            dispatch(action)
-        },
-        setTodoLists: (todolists) => {
-            dispatch(setTodoListsAC(todolists))
-        }
+        todoLists: state.todoListPage.todolists,
+        isWaitingTodo: state.todoListPage.isWaitingTodo
     }
 }
 
 
-const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
+const ConnectedApp = connect(mapStateToProps, {getTodoLists, createNewTodoLists})(App);
 export default ConnectedApp;
 

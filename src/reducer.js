@@ -1,3 +1,5 @@
+import api from "./api";
+
 export const ADD_TODOLIST = "todolist/reducer/ADD-TODOLIST"
 export const CHANGE_TASK = "todolist/reducer/CHANGE-TASK"
 export const ADD_TASK = "todolist/reducer/ADD-TASK"
@@ -6,10 +8,16 @@ export const DELETE_TASK = "todolist/reducer/DELETE-TASK"
 export const SET_TODOLISTS = "todolist/reducer/SET-TODOLISTS"
 export const SET_TASKS = "todolist/reducer/SET-TASKS"
 export const CHANGE_TODOLIST_TITLE = "todolist/reducer/CHANGE_TODOLIST_TITLE"
+export const TOGGLE_IS_WAITING_TODO
+    = "todolist/reducer/TOGGLE_IS_WAITING_TODO"
+export const TOGGLE_IS_WAITING_TASK
+    = "todolist/reducer/TOGGLE_IS_WAITING_TASK"
 
 
 const initialState = {
-    todolists: []
+    todolists: [],
+    isWaitingTodo: false,
+    isWaitingTask: false,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -91,57 +99,63 @@ export const reducer = (state = initialState, action) => {
                     }
                 })
             }
+        case TOGGLE_IS_WAITING_TODO:
+            return {
+                ...state, isWaitingTodo: action.isWaitingTodo
+            }
+        case TOGGLE_IS_WAITING_TASK:
+            return {
+                ...state, isWaitingTask: action.isWaitingTask
+            }
     }
     return state;
 }
 
-export const setTodoListsAC = (todolists) => {
-
+const setTodoLists = (todolists) => {
     return {type: SET_TODOLISTS, todolists};
 }
 
-export const addTodolistAC = (newTodoList) => {
+const addTodolist = (newTodoList) => {
     return {
         type: ADD_TODOLIST,
         newTodoList: newTodoList
     };
 }
 
-
-export const setTaskAC = (tasks, todolistId) => {
+const setTasks = (tasks, todolistId) => {
     return {type: SET_TASKS, tasks, todolistId};
 }
 
 
-export const addTaskAC = (newTask) => {
+const addTask = (newTask) => {
     return {
         type: ADD_TASK,
         newTask: newTask,
     };
 }
 
-export const changeTaskAC = (task) => {
+const changeTask = (task) => {
     return {
         type: CHANGE_TASK,
         task
     };
 }
 
-export const deleteTodoListAC = (todolistId) => {
+const deleteTodoList = (todolistId) => {
     return {
         type: DELETE_TODOLIST,
         todolistId: todolistId,
     };
 }
 
-export const deleteTaskAC = (todolistId, taskId) => {
+const deleteTask = (todolistId, taskId) => {
     return {
         type: DELETE_TASK,
         todolistId: todolistId,
         taskId: taskId
     };
 }
-export const changeTodoListTitleAC = (todolistId, title) => {
+const changeTodoListTitle = (todolistId, title) => {
     return {
         type: CHANGE_TODOLIST_TITLE,
         todolistId,
@@ -149,5 +163,86 @@ export const changeTodoListTitleAC = (todolistId, title) => {
     };
 }
 
+const toggleWaitingTodo = (isWaitingTodo) => {
+    return {type: TOGGLE_IS_WAITING_TODO, isWaitingTodo}
+}
 
+const toggleWaitingTask = (isWaitingTask) => {
+    return {type: TOGGLE_IS_WAITING_TASK, isWaitingTask}
+}
 
+//thunk
+
+export const getTodoLists = () => (dispatch, getState) => {
+    dispatch(toggleWaitingTodo(true));
+    api.getTodoList()
+        .then(res => {
+            dispatch(toggleWaitingTodo(false));
+            dispatch(setTodoLists(res.data))
+        });
+}
+
+export const createNewTodoLists = (title) => (dispatch, getState) => {
+    api.createTodoList(title)
+        .then(responsive => {
+            let todolist = responsive.data.data.item;
+            dispatch(addTodolist(todolist))
+        })
+}
+
+export const getTasks = (todoListId) => (dispatch, getState) => {
+    dispatch(toggleWaitingTask(true));
+    api.getTasks(todoListId)
+        .then(response => {
+            if (!response.data.error) {
+                dispatch(toggleWaitingTask(false));
+                let allTasks = response.data.items;
+                dispatch(setTasks(allTasks, todoListId))
+            }
+        })
+}
+
+export const addNewTask = (newText, taskId) => (dispatch, getState) => {
+    api.createTasks(newText, taskId)
+        .then(response => {
+            let newTask = response.data.data.item;
+            dispatch(addTask(newTask));
+        })
+}
+
+export const updateTask = (task, obj, toDoListId, taskId) => (dispatch, getState) => {
+    api.updateTask(task, obj, toDoListId, taskId)
+        .then(response => {
+            if (response.data.resultCode === 0) {
+                dispatch(changeTask(response.data.data.item));
+            }
+        })
+}
+
+export const delTodoList = (toDoListId) => (dispatch, getState) => {
+    api.deleteTodoList(toDoListId)
+        .then(response => {
+                if (response.data.resultCode === 0) {
+                    dispatch(deleteTodoList(toDoListId))
+                }
+            }
+        )
+}
+
+export const delTask = (toDoListId, taskId) => (dispatch, getState) => {
+    api.deleteTask(toDoListId, taskId)
+        .then(response => {
+            if (response.data.resultCode === 0) {
+                dispatch(deleteTask(toDoListId, taskId));
+            }
+        })
+}
+
+export const updateTodoListTitle = (toDoListId, title) => (dispatch, getState) => {
+    api.changeTodoListTitle(toDoListId, title)
+        .then(response => {
+            if (response.data.resultCode === 0) {
+                dispatch(changeTodoListTitle(toDoListId, title))
+            }
+        })
+}

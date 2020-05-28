@@ -5,8 +5,15 @@ import TodoListFooter from "./TodoListFooter";
 import TodoListTitle from "./Components/ToDoListTitle/TodoListTitle";
 import AddNewItemForm from "./Components/AddNewItemForm/AddNewItemForm";
 import {connect} from "react-redux";
-import {addTaskAC, changeTaskAC, changeTodoListTitleAC, deleteTaskAC, deleteTodoListAC, setTaskAC} from "./reducer";
-import api from "./api";
+import {
+    addNewTask,
+    delTask,
+    delTodoList,
+    getTasks,
+    updateTask,
+    updateTodoListTitle
+} from "./reducer";
+import Loading from "./common/Loading/Loading";
 
 
 class ToDoList extends React.Component {
@@ -45,23 +52,12 @@ class ToDoList extends React.Component {
     };
 
     restoreState = () => {
-        api.getTasks(this.props.id)
-
-            .then(response => {
-                if (!response.data.error) {
-                    let allTasks = response.data.items;
-                    this.props.setTasks(allTasks, this.props.id)
-                }
-            })
+        this.props.getTasks(this.props.id);
     }
 
 
     addTask = (newText) => {
-        api.createTasks(newText, this.props.id)
-            .then(response => {
-                let newTask = response.data.data.item;
-                this.props.addTask(newTask)
-            })
+        this.props.addNewTask(newText, this.props.id)
     };
 
 
@@ -75,12 +71,7 @@ class ToDoList extends React.Component {
     };
 
     changeTask = (task, obj) => {
-        api.updateTask(task, obj, this.props.id, task.id)
-            .then(response => {
-                if (response.data.resultCode === 0) {
-                    this.props.changeTask(response.data.data.item)
-                }
-            })
+        this.props.updateTask(task, obj, this.props.id, task.id)
     };
 
     changeStatus = (task, status) => {
@@ -92,33 +83,15 @@ class ToDoList extends React.Component {
     };
 
     deleteTodoList = () => {
-        api.deleteTodoList(this.props.id)
-            .then(response => {
-                    if (response.data.resultCode === 0) {
-                        this.props.deleteTodoList(this.props.id)
-                    }
-                }
-            )
+        this.props.delTodoList(this.props.id)
     }
 
     deleteTask = (taskId) => {
-        api.deleteTask(this.props.id, taskId)
-            .then(response => {
-                if (response.data.resultCode === 0) {
-                    this.props.deleteTask(this.props.id, taskId)
-                }
-            })
+        this.props.delTask(this.props.id, taskId)
     }
 
     changeTodoListTitle = (title) => {
-        api.changeTodoListTitle(this.props.id, title)
-            .then(response => {
-                if (response.data.resultCode === 0) {
-                    this.props.changeTodoListTitle(this.props.id, title)
-                }
-            })
-
-
+        this.props.updateTodoListTitle(this.props.id, title)
     }
 
 
@@ -134,21 +107,23 @@ class ToDoList extends React.Component {
                         <button className='detete_todoList' onClick={this.deleteTodoList}>x</button>
                     </div>
                     <AddNewItemForm addItem={this.addTask}/>
-                    <TodoListTasks
-                        changeTitle={this.changeTitle}
-                        changeStatus={this.changeStatus}
-                        deleteTask={this.deleteTask}
-                        tasks={tasks.filter(t => {
-                            if (this.state.filterValue === "All") {
-                                return true;
-                            }
-                            if (this.state.filterValue === "Completed") {
-                                return t.status === 2;
-                            }
-                            if (this.state.filterValue === "Active") {
-                                return t.status === 0;
-                            }
-                        })}/>
+                    {this.props.isWaitingTask ?
+                        <Loading/> :
+                        <TodoListTasks
+                            changeTitle={this.changeTitle}
+                            changeStatus={this.changeStatus}
+                            deleteTask={this.deleteTask}
+                            tasks={tasks.filter(t => {
+                                if (this.state.filterValue === "All") {
+                                    return true;
+                                }
+                                if (this.state.filterValue === "Completed") {
+                                    return t.status === 2;
+                                }
+                                if (this.state.filterValue === "Active") {
+                                    return t.status === 0;
+                                }
+                            })}/>}
                     <TodoListFooter
                         filterValue={this.state.filterValue}
                         changeFilter={this.changeFilter}
@@ -162,34 +137,19 @@ class ToDoList extends React.Component {
 }
 
 
-const mapDispatchToProps = (dispatch) => {
+const mapStateToProps = (state) => {
     return {
-        setTasks(tasks, todolistId) {
-            const action = setTaskAC(tasks, todolistId)
-            dispatch(action)
-        },
-        addTask(newTask) {
-            const action = addTaskAC(newTask)
-            dispatch(action)
-        },
-        changeTask: (task) => {
-            const action = changeTaskAC(task)
-            dispatch(action)
-        },
-        deleteTodoList: (todolistId) => {
-            const action = deleteTodoListAC(todolistId)
-            dispatch(action)
-        },
-        deleteTask: (todolistId, taskId) => {
-            const action = deleteTaskAC(todolistId, taskId)
-            dispatch(action)
-        },
-        changeTodoListTitle: (todolistId, title) => {
-            dispatch(changeTodoListTitleAC(todolistId, title))
-        }
+        isWaitingTask: state.todoListPage.isWaitingTask
     }
 }
 
 
-const ConnectedTodoList = connect(null, mapDispatchToProps)(ToDoList)
+const ConnectedTodoList = connect(mapStateToProps, {
+    addNewTask,
+    updateTask,
+    delTodoList,
+    delTask,
+    updateTodoListTitle,
+    getTasks
+})(ToDoList)
 export default ConnectedTodoList;
