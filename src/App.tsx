@@ -3,12 +3,24 @@ import './App.css';
 import ToDoList from "./ToDoList";
 import AddNewItemForm from "./Components/AddNewItemForm/AddNewItemForm";
 import {connect} from "react-redux";
-import {addTodolist, createNewTodoLists, getTodoLists} from "./reducer";
-import api from "./api";
+import {createNewTodoLists, getTodoLists} from "./reducer";
 import Loading from "./common/Loading/Loading";
+import { AppStateType } from './store';
+import {TodoListType} from "./types/entities";
 
 
-class App extends React.Component {
+type MapDispatchToPropsType = {
+    getTodoLists: ()=>void
+    createNewTodoLists: (title: string) => void
+}
+type MapStateToPropsType = {
+    todoLists: Array<TodoListType>
+    isWaitingTodo: boolean
+}
+
+type PropsType = MapDispatchToPropsType & MapStateToPropsType
+
+class App extends React.Component<PropsType> {
 
     componentDidMount = () => {
         this.restoreState()
@@ -18,7 +30,7 @@ class App extends React.Component {
         this.props.getTodoLists();
     }
 
-    addTodoList = (title) => {
+    addTodoList = (title: string) => {
         this.props.createNewTodoLists(title);
     };
 
@@ -50,14 +62,14 @@ class App extends React.Component {
 }
 
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: AppStateType): MapStateToPropsType => {
     return {
-        todoLists: state.todoListPage.todolists,
+        todoLists: state.todoListPage.todoLists,
         isWaitingTodo: state.todoListPage.isWaitingTodo
     }
 }
 
 
-const ConnectedApp = connect(mapStateToProps, {getTodoLists, createNewTodoLists})(App);
+const ConnectedApp = connect<MapStateToPropsType, MapDispatchToPropsType, {}, AppStateType>(mapStateToProps, {getTodoLists, createNewTodoLists})(App);
 export default ConnectedApp;
 

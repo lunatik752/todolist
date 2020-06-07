@@ -1,9 +1,19 @@
-import React from "react";
-import PropTypes from 'prop-types';
+import React, {ChangeEvent, KeyboardEvent} from "react";
 
-class AddNewItemForm extends React.Component {
 
-    state = {
+type StateType = {
+    error: boolean
+    title: string
+}
+
+type  OwnPropsType = {
+    addItem: (title: string) => void
+}
+
+class AddNewItemForm extends React.Component<OwnPropsType, StateType> {
+
+
+    state: StateType = {
         error: false,
         title: "",
     };
@@ -20,14 +30,14 @@ class AddNewItemForm extends React.Component {
         }
     };
 
-    onFilterChange = (e) => {
+    onFilterChange = (e: ChangeEvent<HTMLInputElement>) => {
         this.setState({
             error: false,
             title: e.currentTarget.value
         });
     };
 
-    onKeyPress = (e) => {
+    onKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
             this.onAddItemClick()
         }
@@ -53,7 +63,3 @@ class AddNewItemForm extends React.Component {
 }
 
 export default AddNewItemForm;
-
-AddNewItemForm.propTypes = {
-    name: PropTypes.object
-};
