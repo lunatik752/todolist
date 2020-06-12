@@ -1,5 +1,5 @@
 import axios from "axios";
-import {TaskType, TodoListType, UpdateTaskType} from "./types/entities";
+import {TaskType, TodoListType} from "./types/entities";
 
 const instance = axios.create({
     baseURL: "https://social-network.samuraijs.com/api/1.1/todo-lists",
@@ -37,8 +37,9 @@ const api = {
     createTasks(newText: string, todoListId: string) {
         return instance.post<CommonApiType<{item: TaskType}>>(`${todoListId}/tasks`, {title: newText})
     },
-    updateTask(task: TaskType, obj: UpdateTaskType, todoListId: string, taskId: string) {
-        return instance.put<CommonApiType<{item: TaskType}>>(`${todoListId}/tasks/${taskId}`, {...task, ...obj})
+    updateTask( taskId: string, todoListId: string, task: TaskType,) {
+        debugger
+        return instance.put<CommonApiType<{item: TaskType}>>(`${todoListId}/tasks/${taskId}`, task)
     },
     deleteTodoList(todoListId: string) {
         return instance.delete<CommonApiType<{}>>(`${todoListId}`,)

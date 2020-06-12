@@ -8,7 +8,7 @@ class TodoListTask extends React.Component {
 
     onIsDoneChanged = (e) => {
         let status = e.currentTarget.checked ? 2 : 0;
-        this.props.changeStatus(this.props.task, status)
+        this.props.changeStatus(this.props.task.id, status)
     };
 
     activateEditMode = () => {
@@ -16,8 +16,8 @@ class TodoListTask extends React.Component {
     };
 
     deActivateEditMode = () => {
-        this.props.changeTitle(this.props.task, this.state.title)
-        this.setState({editMode: false, editModePriority: false})
+        this.props.changeTitle(this.props.task.id, this.state.title)
+        this.setState({editMode: false})
     };
 
     onTitleChanged = (e) => {
@@ -55,7 +55,6 @@ class TodoListTask extends React.Component {
             default:
                 taskPriority = 'not specified'
         }
-
 
         return (
             <div className={taskIsDoneClass}>

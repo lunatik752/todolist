@@ -5,12 +5,12 @@ import AddNewItemForm from "./Components/AddNewItemForm/AddNewItemForm";
 import {connect} from "react-redux";
 import {createNewTodoLists, getTodoLists} from "./reducer";
 import Loading from "./common/Loading/Loading";
-import { AppStateType } from './store';
+import {AppStateType} from './store';
 import {TodoListType} from "./types/entities";
 
 
 type MapDispatchToPropsType = {
-    getTodoLists: ()=>void
+    getTodoLists: () => void
     createNewTodoLists: (title: string) => void
 }
 type MapStateToPropsType = {
@@ -70,6 +70,9 @@ const mapStateToProps = (state: AppStateType): MapStateToPropsType => {
 }
 
 
-const ConnectedApp = connect<MapStateToPropsType, MapDispatchToPropsType, {}, AppStateType>(mapStateToProps, {getTodoLists, createNewTodoLists})(App);
+const ConnectedApp = connect<MapStateToPropsType, MapDispatchToPropsType, {}, AppStateType>(mapStateToProps, {
+    getTodoLists,
+    createNewTodoLists
+})(App);
 export default ConnectedApp;
 

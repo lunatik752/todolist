@@ -24,31 +24,12 @@ class ToDoList extends React.Component {
 
 
     state = {
-        tasks: [],
         filterValue: 'All',
     };
 
     saveState = () => {
         let stateAsString = JSON.stringify(this.state);
         localStorage.setItem('our-state-' + this.props.id, stateAsString)
-    };
-
-    _restoreState = () => {
-        let state = {
-            tasks: [],
-            filterValue: 'All'
-        };
-        let stateAsString = localStorage.getItem('our-state-' + this.props.id);
-        if (stateAsString != null) {
-            state = JSON.parse(stateAsString);
-        }
-        this.setState(state, () => {
-            this.state.tasks.forEach(task => {
-                if (task.id >= this.nextTaskId) {
-                    this.nextTaskId = task.id + 1;
-                }
-            })
-        });
     };
 
     restoreState = () => {
@@ -70,16 +51,23 @@ class ToDoList extends React.Component {
         );
     };
 
-    changeTask = (task, obj) => {
-        this.props.updateTask(task, obj, this.props.id, task.id)
+    changeTask = (taskId, obj) => {
+        debugger
+        let changedTask = this.props.tasks.find(task => {
+            return task.id === taskId
+        });
+        let task = {...changedTask, ...obj};
+        this.props.updateTask(task.id, this.props.id, task)
     };
 
-    changeStatus = (task, status) => {
-        this.changeTask(task, {status: status})
+
+
+    changeStatus = (taskId, status) => {
+        this.changeTask(taskId, {status: status})
     };
 
-    changeTitle = (task, title) => {
-        this.changeTask(task, {title: title})
+    changeTitle = (taskId, title) => {
+        this.changeTask(taskId, {title: title})
     };
 
     deleteTodoList = () => {

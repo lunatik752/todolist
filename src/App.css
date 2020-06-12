@@ -25,17 +25,12 @@
 }
 
 .detete_todoList {
-  background: red;
+  background: yellow;
   width: 25px;
   height: 25px;
 
 }
 
-
-/*.todoList {*/
-/*  width: 500px;*/
-/*  margin: 0 auto;*/
-/*}*/
 
 .todoList > div {
   padding: 10px;

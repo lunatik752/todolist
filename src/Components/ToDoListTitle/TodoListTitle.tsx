@@ -1,37 +1,23 @@
-import React from "react";
-import PropTypes from 'prop-types';
+import React, { ChangeEvent } from "react";
 
-class TodoListTitle extends React.Component {
+type PropsType = {
+    title: string
+    changeTodoListTitle: (title: string) => void
+}
 
-    state = {
-        // error: false,
+type StateType = {
+    title: string
+    editMode: boolean
+}
+
+
+class TodoListTitle extends React.Component<PropsType> {
+
+    state: StateType = {
         title: this.props.title,
         editMode: false,
     };
 
-    // onAddTaskClick = () => {
-    //     let newTitle = this.state.title;
-    //     this.setState({title: ""});
-    //     if (newTitle === "") {
-    //         this.setState({error: true})
-    //     } else {
-    //         this.setState({error: false});
-    //         this.props.addTask(newTitle)
-    //     }
-    // };
-    //
-    // onFilterChange = (e) => {
-    //     this.setState({
-    //         error: false,
-    //         title: e.currentTarget.value
-    //     });
-    // };
-    //
-    // onKeyPress = (e) => {
-    //     if (e.key === "Enter") {
-    //         this.onAddTaskClick()
-    //     }
-    // };
 
     activateEditMode = () => {
         this.setState({editMode: true})
@@ -42,7 +28,7 @@ class TodoListTitle extends React.Component {
         this.setState({editMode: false})
     };
 
-    onTitleChanged = (e) => {
+    onTitleChanged = (e: ChangeEvent<HTMLInputElement>) => {
         this.setState({title: e.currentTarget.value})
     };
 
@@ -66,7 +52,3 @@ class TodoListTitle extends React.Component {
 }
 
 export default TodoListTitle;
-
-TodoListTitle.propTypes = {
-    name: PropTypes.object
-};

@@ -30,7 +30,6 @@ const initialState: InitialStateType = {
 }
 
 export const reducer = (state: InitialStateType = initialState, action: TodoActionTypes): InitialStateType => {
-    let newTodoList;
     switch (action.type) {
         case SET_TODOLISTS:
             return {
@@ -38,7 +37,10 @@ export const reducer = (state: InitialStateType = initialState, action: TodoActi
                 todoLists: action.todoLists.map(tl => ({...tl, tasks: []}))
             }
         case ADD_TODOLIST:
-            return {...state, todoLists: [...state.todoLists, action.newTodoList]};
+            return {
+                ...state,
+                todoLists: [action.newTodoList, ...state.todoLists,]
+            };
         case SET_TASKS:
             return {
                 ...state,
@@ -51,26 +53,28 @@ export const reducer = (state: InitialStateType = initialState, action: TodoActi
                 })
             }
         case ADD_TASK:
-            newTodoList = state.todoLists.map(todo => {
-                if (todo.id !== action.newTask.id) {
-                    return todo
-                } else {
-                    return {...todo, tasks: [...todo.tasks, action.newTask]}
-                }
-            })
-            return {...state, todoLists: newTodoList};
+            return {
+                ...state,
+                todoLists: state.todoLists.map(todo => {
+                    if (todo.id === action.todoListId) {
+                        return {...todo, tasks: [action.newTask, ...todo.tasks]}
+                    } else {
+                        return todo
+                    }
+                })
+            };
         case CHANGE_TASK:
             return {
                 ...state,
                 todoLists: state.todoLists.map(todo => {
-                    if (todo.id === action.task.id) {
+                    if (todo.id === action.todoListId) {
                         return {
                             ...todo,
                             tasks: todo.tasks.map(t => {
-                                if (todo.id !== action.task.id) {
+                                if (t.id !== action.taskId) {
                                     return t;
                                 } else {
-                                    return {...action.task};
+                                    return {...t, ...action.obj};
                                 }
                             })
                         }
@@ -92,7 +96,7 @@ export const reducer = (state: InitialStateType = initialState, action: TodoActi
                     if (todo.id !== action.todoListId) {
                         return todo
                     } else {
-                        return {...todo, tasks: todo.tasks.filter(task => task.id !== action.taskId)}
+                        return {...todo, tasks: todo.tasks.filter(t => t.id !== action.taskId)}
                     }
                 })
             }
@@ -182,13 +186,17 @@ const addTask = (newTask: TaskType, todoListId: string): AddTaskType => {
 
 type ChangeTaskType = {
     type: typeof CHANGE_TASK
-    task: TaskType
+    taskId: string
+    obj: UpdateTaskType
+    todoListId: string
 }
 
-const changeTask = (task: TaskType): ChangeTaskType => {
+const changeTask = (taskId: string, obj: UpdateTaskType, todoListId: string): ChangeTaskType => {
     return {
         type: CHANGE_TASK,
-        task
+        taskId,
+        obj,
+        todoListId
     };
 }
 
@@ -289,14 +297,15 @@ export const addNewTask = (newText: string, todoListId: string) => (dispatch: Di
         })
 }
 
-export const updateTask = (task: TaskType, obj: UpdateTaskType, todoListId: string, taskId: string) => (dispatch: Dispatch<TodoActionTypes>) => {
-    api.updateTask(task, obj, todoListId, taskId)
+export const updateTask = (taskId: string, todoListId: string, task: TaskType) => (dispatch: Dispatch<TodoActionTypes>) => {
+    api.updateTask(taskId, todoListId, task)
         .then(response => {
             if (response.data.resultCode === 0) {
-                dispatch(changeTask(response.data.data.item));
+                dispatch(changeTask(taskId, task, todoListId));
             }
         })
 }
+
 
 export const delTodoList = (toDoListId: string) => (dispatch: Dispatch<TodoActionTypes>) => {
     api.deleteTodoList(toDoListId)

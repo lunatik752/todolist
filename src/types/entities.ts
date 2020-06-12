@@ -5,6 +5,7 @@ export type TodoListType = {
     addedDate: string
     order: number
     tasks: Array<TaskType>
+
 }
 
 export type TaskType = {
@@ -23,5 +24,5 @@ export type TaskType = {
 
 export type UpdateTaskType = {
     title?: string
-    status?: boolean
+    status?: number
 }

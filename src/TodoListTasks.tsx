@@ -1,6 +1,15 @@
 import React from "react";
 import TodoListTask from "./Components/TodoListTasks/TodoListTask/TodoListTask";
-class TodoListTasks extends React.Component {
+import {TaskType} from "./types/entities";
+
+type PropsType = {
+    tasks: Array<TaskType>
+    changeTitle: (taskId: string, title: string) => void
+    changeStatus: (taskId: string, status: string) => void
+    deleteTask: (taskId: string) => void
+}
+
+class TodoListTasks extends React.Component<PropsType> {
 
 
     render = () => {
@@ -9,9 +18,8 @@ class TodoListTasks extends React.Component {
                 changeTitle={this.props.changeTitle}
                 changeStatus={this.props.changeStatus}
                 task={task}
-                title={task.title}
-                isDone={task.isDone}
-                priority={task.priority}
+
+
                 deleteTask={this.props.deleteTask}
             />
         );
