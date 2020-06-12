@@ -5,7 +5,7 @@ import {TaskType} from "./types/entities";
 type PropsType = {
     tasks: Array<TaskType>
     changeTitle: (taskId: string, title: string) => void
-    changeStatus: (taskId: string, status: string) => void
+    changeStatus: (taskId: string, status: number) => void
     deleteTask: (taskId: string) => void
 }
 
@@ -18,8 +18,6 @@ class TodoListTasks extends React.Component<PropsType> {
                 changeTitle={this.props.changeTitle}
                 changeStatus={this.props.changeStatus}
                 task={task}
-
-
                 deleteTask={this.props.deleteTask}
             />
         );

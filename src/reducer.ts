@@ -74,7 +74,7 @@ export const reducer = (state: InitialStateType = initialState, action: TodoActi
                                 if (t.id !== action.taskId) {
                                     return t;
                                 } else {
-                                    return {...t, ...action.obj};
+                                    return {...action.task};
                                 }
                             })
                         }
@@ -187,15 +187,15 @@ const addTask = (newTask: TaskType, todoListId: string): AddTaskType => {
 type ChangeTaskType = {
     type: typeof CHANGE_TASK
     taskId: string
-    obj: UpdateTaskType
+    task: TaskType
     todoListId: string
 }
 
-const changeTask = (taskId: string, obj: UpdateTaskType, todoListId: string): ChangeTaskType => {
+const changeTask = (taskId: string, task: TaskType, todoListId: string): ChangeTaskType => {
     return {
         type: CHANGE_TASK,
         taskId,
-        obj,
+        task,
         todoListId
     };
 }

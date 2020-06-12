@@ -13,6 +13,7 @@ type MapDispatchToPropsType = {
     getTodoLists: () => void
     createNewTodoLists: (title: string) => void
 }
+
 type MapStateToPropsType = {
     todoLists: Array<TodoListType>
     isWaitingTodo: boolean

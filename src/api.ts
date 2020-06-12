@@ -38,7 +38,6 @@ const api = {
         return instance.post<CommonApiType<{item: TaskType}>>(`${todoListId}/tasks`, {title: newText})
     },
     updateTask( taskId: string, todoListId: string, task: TaskType,) {
-        debugger
         return instance.put<CommonApiType<{item: TaskType}>>(`${todoListId}/tasks/${taskId}`, task)
     },
     deleteTodoList(todoListId: string) {
