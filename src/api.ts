@@ -8,7 +8,6 @@ const instance = axios.create({
 })
 
 
-
 type CommonApiType<T> = {
     resultCode: number
     messages: Array<string>
@@ -22,9 +21,7 @@ type GetTaskType = {
 }
 
 
-
 const api = {
-
     createTodoList(title: string) {
         return instance.post<CommonApiType<{ item: TodoListType }>>('', {title: title})
     },
@@ -35,10 +32,10 @@ const api = {
         return instance.get<GetTaskType>(`${todoListId}/tasks`)
     },
     createTasks(newText: string, todoListId: string) {
-        return instance.post<CommonApiType<{item: TaskType}>>(`${todoListId}/tasks`, {title: newText})
+        return instance.post<CommonApiType<{ item: TaskType }>>(`${todoListId}/tasks`, {title: newText})
     },
-    updateTask( taskId: string, todoListId: string, task: TaskType,) {
-        return instance.put<CommonApiType<{item: TaskType}>>(`${todoListId}/tasks/${taskId}`, task)
+    updateTask(taskId: string, todoListId: string, task: TaskType,) {
+        return instance.put<CommonApiType<{ item: TaskType }>>(`${todoListId}/tasks/${taskId}`, task)
     },
     deleteTodoList(todoListId: string) {
         return instance.delete<CommonApiType<{}>>(`${todoListId}`,)
