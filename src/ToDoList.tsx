@@ -24,7 +24,7 @@ type MapStateToPropsType = {
 
 type MapDispatchToPropsType = {
     addNewTask: (newText: string, todoListId: string) => void
-    updateTask: (taskId: string, todoListId: string, task: any) => void  //need to fix type any of task
+    updateTask: (taskId: string, todoListId: string, task: TaskType) => void  //need to fix type any of task
     delTodoList: (odoListId: string) => void
     delTask: (todoListId: string, taskId: string,) => void
     updateTodoListTitle: (todoListId: string, title: string) => void
@@ -79,11 +79,10 @@ class ToDoList extends React.Component<PropsType> {
     };
 
     changeTask = (taskId: string, obj: UpdateTaskType) => {
-        debugger
         let changedTask = this.props.tasks.find(task => {
             return task.id === taskId
         });
-        let task = {...changedTask, ...obj};
+        let task = {...changedTask, ...obj} as TaskType;
         this.props.updateTask(taskId, this.props.id, task)
     };
 

@@ -264,35 +264,35 @@ export const getTodoLists = () => async (dispatch: Dispatch<TodoActionTypes>) =>
     dispatch(toggleWaitingTodo(true));
     let response = await api.getTodoList()
     dispatch(toggleWaitingTodo(false));
-    dispatch(setTodoLists(response.data))
+    dispatch(setTodoLists(response))
 }
 
 export const createNewTodoLists = (title: string) => async (dispatch: Dispatch<TodoActionTypes>) => {
     let response = await api.createTodoList(title)
-    let todoList = response.data.data.item
+    let todoList = response.data.item
     dispatch(addTodoList(todoList))
 }
 
 export const getTasks = (todoListId: string) => async (dispatch: Dispatch<TodoActionTypes>) => {
     dispatch(toggleWaitingTask(true));
     let response = await api.getTasks(todoListId)
-    if (!response.data.error) {
+    if (!response.error) {
         dispatch(toggleWaitingTask(false));
-        let allTasks = response.data.items;
+        let allTasks = response.items;
         dispatch(setTasks(allTasks, todoListId))
     }
 }
 
 export const addNewTask = (newText: string, todoListId: string) => async (dispatch: Dispatch<TodoActionTypes>) => {
     let response = await api.createTasks(newText, todoListId)
-    let newTask = response.data.data.item;
+    let newTask = response.data.item;
     dispatch(addTask(newTask, todoListId));
 }
 
 export const updateTask = (taskId: string, todoListId: string, task: TaskType) =>
     async (dispatch: Dispatch<TodoActionTypes>) => {
         let response = await api.updateTask(taskId, todoListId, task)
-        if (response.data.resultCode === 0) {
+        if (response.resultCode === 0) {
             dispatch(changeTask(taskId, task, todoListId));
         }
     }
@@ -300,21 +300,21 @@ export const updateTask = (taskId: string, todoListId: string, task: TaskType) =
 
 export const delTodoList = (toDoListId: string) => async (dispatch: Dispatch<TodoActionTypes>) => {
     let response = await api.deleteTodoList(toDoListId)
-    if (response.data.resultCode === 0) {
+    if (response.resultCode === 0) {
         dispatch(deleteTodoList(toDoListId))
     }
 }
 
 export const delTask = (toDoListId: string, taskId: string) => async (dispatch: Dispatch<TodoActionTypes>) => {
     let response = await api.deleteTask(toDoListId, taskId)
-    if (response.data.resultCode === 0) {
+    if (response.resultCode === 0) {
         dispatch(deleteTask(toDoListId, taskId));
     }
 }
 
 export const updateTodoListTitle = (toDoListId: string, title: string) => async (dispatch: Dispatch<TodoActionTypes>) => {
     let response = await api.changeTodoListTitle(toDoListId, title)
-    if (response.data.resultCode === 0) {
+    if (response.resultCode === 0) {
         dispatch(changeTodoListTitle(toDoListId, title))
     }
 }
